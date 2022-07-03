@@ -5,6 +5,10 @@
  */
 import { BaseItem, Item } from "./item.interface";
 import { Items } from "./items.interface";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+
+
+const GOOGLE_API: string = process.env.PORT as string;
 
 /**
  * In-Memory Store
@@ -38,7 +42,17 @@ let items: Items = {
  * 
  */
 
-export const findAll = async (): Promise<Item[]> => Object.values(items);
+export const findAll = async (): Promise<any> => {
+    var config: AxiosRequestConfig<any> = {
+        method: 'get',
+        url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=restaurant&keyword=cruise&key=' + GOOGLE_API,
+        headers: { }
+      };
+    const item: any = await axios(config).then(function (response) {
+        return response.data;
+      });
+    return item;
+}
 
 export const find = async (id: number): Promise<Item> => items[id];
 
