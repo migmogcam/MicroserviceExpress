@@ -6,9 +6,16 @@
 import { BaseItem, Item } from "./item.interface";
 import { Items } from "./items.interface";
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import * as dotenv from "dotenv";
+import { constants } from "../constants"
 
 
-const GOOGLE_API: string = process.env.PORT as string;
+dotenv.config();
+
+if (!process.env.GOOGLE_API) {
+    process.exit(1);
+}
+const GOOGLE_API: string = process.env.GOOGLE_API as string;
 
 /**
  * In-Memory Store
@@ -45,12 +52,19 @@ let items: Items = {
 export const findAll = async (): Promise<any> => {
     var config: AxiosRequestConfig<any> = {
         method: 'get',
-        url: 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=restaurant&keyword=cruise&key=' + GOOGLE_API,
-        headers: { }
-      };
+        url: constants.urlGoogle,
+        params: {
+            location: '-33.8670522%2C151.1957362',
+            radius: "1500",
+            type: "restaurant",
+            keyword: "cruise",
+            key: GOOGLE_API
+          },
+        headers: {}
+    };
     const item: any = await axios(config).then(function (response) {
-        return response.data;
-      });
+        return response.data.results;
+    });
     return item;
 }
 
