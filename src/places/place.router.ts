@@ -2,9 +2,8 @@
  * Required External Modules and Interfaces
  */
 import express, { Request, Response } from "express";
-import * as PlaceService from "./place.service";
 import { PlaceResponse } from './place.interface';
-import { StatusGoogle } from './place.status.enum';
+import * as PlaceService from "./place.service";
 
 
 /**

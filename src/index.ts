@@ -38,7 +38,9 @@ app.use(basicAuth({
     users: { 'admin': PASSAPI }
 }));
 
-app.use("/api/menu/items", itemsRouter);
+// Part of the guide
+// app.use("/api/menu/items", itemsRouter);
+
 app.use("/apiv1/places", placeRoute);
 app.use(errorHandler);
 app.use(notFoundHandler);
