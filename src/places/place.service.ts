@@ -1,8 +1,11 @@
-import { PlaceResponse } from './place.interface';
+import { PlaceResponse } from './models/iplace.interface';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import * as dotenv from "dotenv";
 import { constants } from "../constants"
-import { StatusGoogle } from './place.status.enum';
+import { StatusGoogle } from './models/iplace.status.enum';
+import { IPlaceResult } from './models/iplace-result';
+import { IPlaceItem } from './models/iplace-item';
+import { PriceEnum } from './models/price-enum';
 
 
 dotenv.config();
@@ -40,5 +43,46 @@ export const find = async (location: string, radius: string, type: string, keywo
         resp.info_messages = response.data.info_messages;
         return resp;
     });
+    
     return resp;
+}
+
+
+export const convertToIPlaceResult = (response: PlaceResponse): IPlaceResult => {
+    var resp: IPlaceResult = {} as IPlaceResult;
+
+
+    resp.results = convertTOIPlaceItem(response.results);
+    resp.next_page_token = response.next_page_token? response.next_page_token : '';
+
+
+
+    return resp;
+
+}
+
+const convertTOIPlaceItem = (response: any[]): IPlaceItem[] => {
+    var resps: IPlaceItem[] = [];
+
+    for(var result of response){
+        var resp: IPlaceItem = {} as IPlaceItem;
+        resp.place_id = result.place_id;
+        resp.types = result.types;
+        resp.rating = result.rating;
+        resp.icon = result.icon;
+        resp.icon_background_color= result.icon_background_color;
+        resp.icon_mask_base_uri = result.icon_mask_base_uri;
+        resp.international_phone_number = result.international_phone_number;
+        resp.name = result.name;
+        resp.opening_hours = result.opening_hours;
+        resp.photos = result.photos;
+        resp.price_level = PriceEnum[result.price_level];
+        resp.url = result.url;
+        resp.website = result.website;
+        resps.push(resp);
+    }
+
+    return resps;
+
+
 }

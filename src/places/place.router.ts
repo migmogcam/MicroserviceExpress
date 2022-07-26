@@ -2,7 +2,7 @@
  * Required External Modules and Interfaces
  */
 import express, { Request, Response } from "express";
-import { PlaceResponse } from './place.interface';
+import { PlaceResponse } from './models/iplace.interface';
 import * as PlaceService from "./place.service";
 
 
@@ -29,7 +29,7 @@ placeRoute.get("/", async (req: Request, res: Response) => {
         pagetoken = req.query.pagetoken as string || "";
         const resp: PlaceResponse = await PlaceService.find(location, radius, type, keyword, language, pagetoken);
         if(resp.status[0] === "OK") {
-            res.status(200).send(resp.next_page_token? {results: resp.results, next_page_token: resp.next_page_token} : resp.results);
+            res.status(200).send(PlaceService.convertToIPlaceResult(resp));
         } else {
             res.status(400).send({
                 errorStatus: resp.status[0],
