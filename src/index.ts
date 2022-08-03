@@ -7,7 +7,7 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import basicAuth from 'express-basic-auth';
-import { itemsRouter } from "./items/items.router";
+import compression from "compression";
 import { errorHandler } from "./middleware/error.middleware";
 import { notFoundHandler } from "./middleware/not-found.middleware";
 import { placeRoute } from "./places/place.router";
@@ -34,6 +34,7 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
+app.use(compression())
 app.use(basicAuth({
     users: { 'admin': PASSAPI }
 }));

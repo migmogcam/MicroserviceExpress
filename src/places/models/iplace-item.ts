@@ -12,7 +12,7 @@ export interface IPlaceItem {
   international_phone_number? : string;
   name? : string;
   opening_hours? : IOpeningHours;
-  photos? : Array<IPlacePhoto>;
+  photos? : any;
   price_level? : string;
   url? : string;
   website? : string;

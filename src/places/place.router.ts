@@ -4,7 +4,7 @@
 import express, { Request, Response } from "express";
 import { PlaceResponse } from './models/iplace.interface';
 import * as PlaceService from "./place.service";
-
+import * as fs from 'fs';
 
 /**
  * Router Definition
@@ -28,7 +28,7 @@ placeRoute.get("/", async (req: Request, res: Response) => {
         language = req.query.language as string || "es";
         pagetoken = req.query.pagetoken as string || "";
         const resp: PlaceResponse = await PlaceService.find(location, radius, type, keyword, language, pagetoken);
-        if(resp.status[0] === "OK") {
+        if (resp.status[0] === "OK") {
             res.status(200).send(PlaceService.convertToIPlaceResult(resp));
         } else {
             res.status(400).send({
@@ -37,6 +37,31 @@ placeRoute.get("/", async (req: Request, res: Response) => {
                 errorMessage: resp.error_message,
                 errorInfo: resp.info_messages
             });
+        }
+    } catch (e: unknown) {
+        let errorMessage = "Failed to do something exceptional";
+        if (e instanceof Error) {
+            res.status(500).send(e.message);
+        } else {
+            res.status(500).send(errorMessage);
+        }
+    }
+});
+
+// GET photo
+
+placeRoute.get("/photo", async (req: Request, res: Response) => {
+    try {
+        let photoReference: string, photoWith: string, photoHeight: string;
+        photoReference = req.query.photoReference as string || "";
+        photoWith = req.query.photoWith as string || "";
+        photoHeight = req.query.photoHeight as string || "";
+        const resp: any = await PlaceService.findPhoto(photoReference, photoWith, photoHeight);
+        if (resp) {
+            res.status(200).send({url : resp});
+        } else {
+            let errorMessage = "Failed to do something exceptional";
+            res.status(500).send(errorMessage);
         }
     } catch (e: unknown) {
         let errorMessage = "Failed to do something exceptional";
